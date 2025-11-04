@@ -3,14 +3,15 @@ from openai import OpenAI
 import os 
 from flask_cors import CORS
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv(("OPENAI_API_KEY")))
+# ✅ Correct getenv usage
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 @app.route("/gpt", methods=["POST"])
 def gpt():
     data = request.get_json()
@@ -39,8 +40,6 @@ def summarize_portfolio():
         - Notable projects and achievements
         - Professional experience and certifications
         - Overall strengths and specialties
-        
-        
         """
         
         data = request.get_json()
@@ -75,3 +74,4 @@ def home():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
