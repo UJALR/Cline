@@ -40,8 +40,7 @@ def summarize_portfolio():
         - Professional experience and certifications
         - Overall strengths and specialties
         
-        Keep it under 200 words and focus on the most impressive aspects.
-        Be professional but engaging.
+        
         """
         
         data = request.get_json()
