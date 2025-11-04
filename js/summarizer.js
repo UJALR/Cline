@@ -3,7 +3,7 @@ async function askGPT() {
   const responseEl = document.getElementById("response");
   responseEl.textContent = "Thinking...";
 
-  const res = await fetch("https://your-backend-url.onrender.com/gpt", {
+  const res = await fetch("https://cline-1-gotw.onrender.com/summarize-portfolio", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt: userInput })

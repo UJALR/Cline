@@ -3,14 +3,15 @@ from openai import OpenAI
 import os 
 from flask_cors import CORS
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv(("OPENAI_API_KEY")))
+# ✅ Correct getenv usage
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 @app.route("/gpt", methods=["POST"])
 def gpt():
     data = request.get_json()
@@ -39,9 +40,6 @@ def summarize_portfolio():
         - Notable projects and achievements
         - Professional experience and certifications
         - Overall strengths and specialties
-        
-        Keep it under 200 words and focus on the most impressive aspects.
-        Be professional but engaging.
         """
         
         data = request.get_json()
