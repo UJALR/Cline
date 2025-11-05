@@ -373,25 +373,37 @@
         </div>
     </section>
 
-    <!-- AI Summarizer Section -->
-    <section id="summary-section" class="section" style="background: var(--bg-secondary);">
+    <!-- AI Chatbot Section -->
+    <section id="chatbot" class="section" style="background: var(--bg-secondary);">
         <div class="container">
-            <h2 class="section-title">🎯 AI Portfolio Summarizer</h2>
-            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                    Get an AI-powered summary of my portfolio highlights, skills, and key achievements using
-                    GPT-4o-mini.
-                </p>
-                <button onclick="summarizePortfolio()" class="btn btn-primary" style="margin-bottom: 2rem;">
-                    <i class="fas fa-robot"></i> Generate AI Summary
-                </button>
-                <div id="summary-output" style="
-                    margin-top: 20px; 
-                    white-space: pre-wrap; 
-                    text-align: left;
-                    min-height: 100px;
-                    line-height: 1.6;
-                "></div>
+            <h2 class="section-title">🤖 Portfolio Chatbot</h2>
+            <div class="chatbot-card">
+                <div class="chat-intro">
+                    Ask anything about my experience, services, or projects and the assistant will answer in real
+                    time.
+                </div>
+                <div class="chat-window" id="chatMessages" aria-live="polite"></div>
+                <div class="chat-quick-prompts">
+                    <button type="button" class="chat-prompt" data-chat-prompt="What services do you offer?">
+                        What services do you offer?
+                    </button>
+                    <button type="button" class="chat-prompt" data-chat-prompt="Tell me about a recent project you're proud of.">
+                        Tell me about a recent project.
+                    </button>
+                    <button type="button" class="chat-prompt" data-chat-prompt="How can I start a project with you?">
+                        How can I start a project with you?
+                    </button>
+                </div>
+                <form id="chatForm" class="chat-input-area" autocomplete="off">
+                    <label class="visually-hidden" for="chatInput">Type your message</label>
+                    <textarea id="chatInput" name="message" rows="2" placeholder="Ask the chatbot about my work..."
+                        required></textarea>
+                    <button type="submit" class="btn btn-primary" id="chatSend">
+                        <span class="send-label">Send</span>
+                        <span class="send-icon"><i class="fas fa-paper-plane"></i></span>
+                    </button>
+                </form>
+                <div class="chat-status" id="chatStatus" role="status" aria-live="polite"></div>
             </div>
         </div>
     </section>
@@ -408,7 +420,7 @@
     </footer>
 
     <script src="script.js"></script>
-    <script src="summarizer.js"></script>
+    <script src="js/chatbot.js"></script>
 </body>
 
 </html>
