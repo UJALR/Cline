@@ -7,16 +7,18 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-# ✅ Allow all domains to call API (required for S3 + browser)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-# ✅ Load API key correctly
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    # ✅ Safely parse JSON even if Render sends weird headers
+    # ✅ Force JSON load even if headers are weird
     data = request.get_json(force=True, silent=True) or {}
 
     prompt = (data.get("prompt") or "").strip()
@@ -30,30 +32,15 @@ def chat():
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
-
         reply = response.choices[0].message.content
         return jsonify({"reply": reply})
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/health", methods=["GET"])
-def health_check():
-    return jsonify({
-        "status": "healthy",
-        "message": "Portfolio chatbot API is running",
-        "model": "gpt-4o-mini"
-    })
-
-
-@app.route("/")
-def home():
-    return jsonify({
-        "message": "Portfolio Chatbot API",
-        "status": "running",
-        "ai_model": "gpt-4o-mini"
-    })
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy", "model": "gpt-4o-mini"})
 
 
 if __name__ == "__main__":
