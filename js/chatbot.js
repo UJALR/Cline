@@ -15,7 +15,7 @@
     return;
   }
 
-  const API_ENDPOINTS = ['/gpt', 'https://cline-1-gotw.onrender.com/gpt'];
+  const API_ENDPOINTS = ['/chat', 'https://cline-1-gotw.onrender.com/chat'];
   const SYSTEM_PROMPT = "You are Ujjawal Rai's friendly portfolio assistant. Answer questions using the details from the" +
     " portfolio site, highlighting skills, experience, and ways to work with Ujjawal. Keep responses concise," +
     " professional, and inviting.";

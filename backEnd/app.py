@@ -13,8 +13,8 @@ CORS(app)
 # ✅ Correct getenv usage
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-@app.route("/gpt", methods=["POST"])
-def gpt():
+@app.route("/chat", methods=["POST"])
+def chat():
     data = request.get_json() or {}
 
     raw_messages = data.get("messages")

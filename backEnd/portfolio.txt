@@ -1,0 +1,50 @@
+Name: Ujjawal Rai
+Location: Mississauga, Ontario, Canada
+
+Profile:
+Ujjawal Rai is an aspiring Full-Stack Web Developer with strong interest in cloud, APIs, AI-powered applications, and modern web technologies. He is passionate about building functional, responsive and user-friendly web experiences.
+
+Skills:
+- HTML5, CSS3, JavaScript
+- Python + Flask (backend APIs)
+- RESTful APIs and JSON communication
+- GitHub, Git version control
+- AWS S3 static hosting, Render cloud deployment
+- Building AI-driven applications using OpenAI
+
+Projects:
+1. AI Portfolio Assistant
+   - Built a custom chatbot for portfolio websites using Flask, OpenAI and Render.
+   - Users can ask questions about skills, projects, and services.
+
+2. AI Content Summarizer
+   - A full-stack application that summarizes content using OpenAI.
+   - Integrated frontend and backend with live deployment.
+
+3. Personal Portfolio Website
+   - Developed a modern personal website hosted on AWS S3.
+   - Contains services, contact information and interactive features.
+
+Services:
+- Portfolio building and customization
+- Website development and UI enhancement
+- Small business website setup
+- API integration
+- Chatbot and AI feature integration
+
+Education:
+Currently pursuing studies in Web Development and Cloud technologies from Algonquin College.
+(You can replace this later with real program + college)
+
+Experience:
+- Built and deployed multiple web applications using Python, Flask, JavaScript and cloud platforms.
+- Strong practical knowledge in deployment, backend integration and frontend behavior.
+
+Strengths:
+- Fast learner and great problem solver
+- Focused on clean code, performance, and user experience
+- Interested in AI, automation, and modern web apps
+
+Contact:
+Ujjawal can be contacted through his portfolio website or professional channels for freelance or project collaborations.
+(You can add email or LinkedIn later)
