@@ -1,57 +1,53 @@
 from flask import Flask, request, jsonify
 from openai import OpenAI
-import os 
+import os
 from flask_cors import CORS
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Correct getenv usage
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json() or {}
-
-    raw_messages = data.get("messages")
-    prompt = (data.get("prompt") or "").strip()
-
-    messages = []
-
-    if isinstance(raw_messages, list) and raw_messages:
-        for item in raw_messages:
-            role = item.get("role") if isinstance(item, dict) else None
-            content = ""
-            if isinstance(item, dict):
-                content = (item.get("content") or item.get("text") or "").strip()
-            if role in {"system", "user", "assistant"} and content:
-                messages.append({"role": role, "content": content})
-
-        if not messages:
-            return jsonify({"error": "No valid messages provided"}), 400
-    elif prompt:
-        messages = [{"role": "user", "content": prompt}]
-    else:
-        return jsonify({"error": "No prompt provided"}), 400
-
-    # Limit conversation to the most recent 12 messages to control token usage
-    if len(messages) > 12:
-        messages = messages[-12:]
-
     try:
+        data = request.get_json() or {}
+        user_message = (data.get("message") or "").strip()
+
+        if not user_message:
+            return jsonify({"error": "No message provided"}), 400
+
+        # ✅ Load portfolio knowledge
+        with open("backEnd/portfolio.txt", "r", encoding="utf-8") as f:
+            portfolio_text = f.read()
+
+        system_prompt = f"""
+        You are an AI assistant representing Ujjawal Rai.
+        You should only answer using the information below.
+        Do NOT make up any details.
+
+        --- Portfolio ---
+        {portfolio_text}
+        """
+
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=messages,
-            max_tokens=500
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=300
         )
+
         reply = response.choices[0].message.content
         return jsonify({"reply": reply})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route("/health", methods=["GET"])
 def health_check():
@@ -61,13 +57,15 @@ def health_check():
         "model": "gpt-4o-mini"
     })
 
+
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Portfolio Chatbot API", 
+        "message": "Portfolio Chatbot API",
         "status": "running",
         "ai_model": "gpt-4o-mini"
     })
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
