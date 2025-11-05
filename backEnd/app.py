@@ -1,44 +1,33 @@
 from flask import Flask, request, jsonify
 from openai import OpenAI
-import os
 from flask_cors import CORS
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
 
+# ✅ Allow all domains to call API (required for S3 + browser)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# ✅ Load API key correctly
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/chat", methods=["POST"])
 def chat():
+    # ✅ Safely parse JSON even if Render sends weird headers
+    data = request.get_json(force=True, silent=True) or {}
+
+    prompt = (data.get("prompt") or "").strip()
+
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+
     try:
-        data = request.get_json() or {}
-        user_message = (data.get("message") or "").strip()
-
-        if not user_message:
-            return jsonify({"error": "No message provided"}), 400
-
-        # ✅ Load portfolio knowledge
-        with open("backEnd/portfolio.txt", "r", encoding="utf-8") as f:
-            portfolio_text = f.read()
-
-        system_prompt = f"""
-        You are an AI assistant representing Ujjawal Rai.
-        You should only answer using the information below.
-        Do NOT make up any details.
-
-        --- Portfolio ---
-        {portfolio_text}
-        """
-
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message}
-            ],
+            messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
 
