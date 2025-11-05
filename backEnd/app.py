@@ -15,16 +15,37 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/gpt", methods=["POST"])
 def gpt():
-    data = request.get_json()
-    prompt = data.get("prompt", "")
-    
-    if not prompt:
+    data = request.get_json() or {}
+
+    raw_messages = data.get("messages")
+    prompt = (data.get("prompt") or "").strip()
+
+    messages = []
+
+    if isinstance(raw_messages, list) and raw_messages:
+        for item in raw_messages:
+            role = item.get("role") if isinstance(item, dict) else None
+            content = ""
+            if isinstance(item, dict):
+                content = (item.get("content") or item.get("text") or "").strip()
+            if role in {"system", "user", "assistant"} and content:
+                messages.append({"role": role, "content": content})
+
+        if not messages:
+            return jsonify({"error": "No valid messages provided"}), 400
+    elif prompt:
+        messages = [{"role": "user", "content": prompt}]
+    else:
         return jsonify({"error": "No prompt provided"}), 400
-    
+
+    # Limit conversation to the most recent 12 messages to control token usage
+    if len(messages) > 12:
+        messages = messages[-12:]
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,
             max_tokens=500
         )
         reply = response.choices[0].message.content
@@ -32,42 +53,18 @@ def gpt():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/summarize-portfolio", methods=["POST"])
-def summarize_portfolio():
-    try:
-        portfolio_context = """
-        You are analyzing a web developer portfolio. Please provide a concise, professional summary highlighting:
-        - Key skills and technologies
-        - Notable projects and achievements
-        - Professional experience and certifications
-        - Overall strengths and specialties
-        """
-        
-        data = request.get_json()
-        user_request = data.get("request", "Summarize this portfolio")
-        
-        full_prompt = f"{portfolio_context}\n\nUser Request: {user_request}"
-        
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": full_prompt}],
-            max_tokens=300
-        )
-        
-        summary = response.choices[0].message.content
-        return jsonify({"summary": summary})
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @app.route("/health", methods=["GET"])
 def health_check():
-    return jsonify({"status": "healthy", "message": "Portfolio summarizer API is running", "model": "gpt-4o-mini"})
+    return jsonify({
+        "status": "healthy",
+        "message": "Portfolio chatbot API is running",
+        "model": "gpt-4o-mini"
+    })
 
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Portfolio Summarizer API", 
+        "message": "Portfolio Chatbot API", 
         "status": "running",
         "ai_model": "gpt-4o-mini"
     })
