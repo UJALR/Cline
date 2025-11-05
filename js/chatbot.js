@@ -18,7 +18,7 @@
   let isWaitingForResponse = false;
 
   const initialGreeting =
-    "Hi there! I'm the AI assistant for Ujjawal Rai's portfolio. Ask me about his skills, experience, services, or how to start a project together.";
+    "Hi there! I'm the AI assistant for Ujjawal Rai. I can chat like ChatGPT and also share details from his portfolio—ask me anything!";
 
   addMessage('assistant', initialGreeting);
   renderMessages();
@@ -57,7 +57,7 @@
     setStatus('Thinking...');
 
     try {
-      const reply = await requestAssistantReply(trimmed);
+      const reply = await requestAssistantReply();
       if (!reply) throw new Error('No reply received from assistant.');
       addMessage('assistant', reply.trim());
       setStatus('');
@@ -70,16 +70,22 @@
     }
   }
 
-  async function requestAssistantReply(lastMessage) {
+  async function requestAssistantReply() {
     let lastError;
 
     for (const url of API_ENDPOINTS) {
       try {
-        // ✅ Send correct JSON shape
+        const payload = {
+          messages: conversation.map((message) => ({
+            role: message.role,
+            content: message.text
+          }))
+        };
+
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: lastMessage })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json();
