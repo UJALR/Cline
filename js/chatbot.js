@@ -1,8 +1,6 @@
 (function () {
   const chatMessages = document.getElementById('chatMessages');
-  if (!chatMessages) {
-    return;
-  }
+  if (!chatMessages) return;
 
   const chatForm = document.getElementById('chatForm');
   const chatInput = document.getElementById('chatInput');
@@ -11,35 +9,27 @@
   const quickPromptButtons = Array.from(document.querySelectorAll('[data-chat-prompt]'));
   const notify = typeof window.showNotification === 'function' ? window.showNotification : null;
 
-  if (!chatForm || !chatInput || !sendButton) {
-    return;
-  }
+  if (!chatForm || !chatInput || !sendButton) return;
 
+  // ✅ Updated to /chat
   const API_ENDPOINTS = ['/chat', 'https://cline-1-gotw.onrender.com/chat'];
-  const SYSTEM_PROMPT = "You are Ujjawal Rai's friendly portfolio assistant. Answer questions using the details from the" +
-    " portfolio site, highlighting skills, experience, and ways to work with Ujjawal. Keep responses concise," +
-    " professional, and inviting.";
 
   const conversation = [];
   let isWaitingForResponse = false;
 
-  const initialGreeting = "Hi there! I'm the AI assistant for Ujjawal Rai's portfolio. Ask me about his skills," +
-    " experience, services, or how to start a project together.";
+  const initialGreeting =
+    "Hi there! I'm the AI assistant for Ujjawal Rai's portfolio. Ask me about his skills, experience, services, or how to start a project together.";
 
   addMessage('assistant', initialGreeting);
   renderMessages();
 
   chatForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (isWaitingForResponse) {
-      return;
-    }
+    if (isWaitingForResponse) return;
 
     const userInput = chatInput.value.trim();
     if (!userInput) {
-      if (notify) {
-        notify('Please enter a message before sending.', 'error');
-      }
+      if (notify) notify('Please enter a message before sending.', 'error');
       chatInput.focus();
       return;
     }
@@ -49,13 +39,9 @@
 
   quickPromptButtons.forEach((button) => {
     button.addEventListener('click', async () => {
-      if (isWaitingForResponse) {
-        return;
-      }
+      if (isWaitingForResponse) return;
       const prompt = button.getAttribute('data-chat-prompt') || button.textContent || '';
-      if (!prompt) {
-        return;
-      }
+      if (!prompt) return;
       chatInput.value = '';
       await handleUserMessage(prompt.trim());
     });
@@ -63,9 +49,7 @@
 
   async function handleUserMessage(messageText) {
     const trimmed = messageText.trim();
-    if (!trimmed) {
-      return;
-    }
+    if (!trimmed) return;
 
     addMessage('user', trimmed);
     chatInput.value = '';
@@ -73,26 +57,42 @@
     setStatus('Thinking...');
 
     try {
-      const reply = await requestAssistantReply();
-      if (!reply) {
-        throw new Error('No reply received from assistant.');
-      }
+      const reply = await requestAssistantReply(trimmed);
+      if (!reply) throw new Error('No reply received from assistant.');
       addMessage('assistant', reply.trim());
       setStatus('');
     } catch (error) {
       console.error(error);
-      if (conversation.length && conversation[conversation.length - 1].role === 'user') {
-        conversation.pop();
-      }
       setStatus('Something went wrong. Please try again.');
-      renderMessages();
-      chatInput.value = trimmed;
-      if (notify) {
-        notify('Unable to reach the AI assistant. Please try again in a moment.', 'error');
-      }
+      if (notify) notify('Unable to reach the AI assistant. Please try again in a moment.', 'error');
     } finally {
       setWaitingState(false);
     }
+  }
+
+  async function requestAssistantReply(lastMessage) {
+    let lastError;
+
+    for (const url of API_ENDPOINTS) {
+      try {
+        // ✅ Send correct JSON shape
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: lastMessage })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.error || `Status ${response.status}`);
+
+        if (typeof data.reply === 'string') return data.reply;
+        throw new Error('Unexpected response');
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError || new Error('Unable to reach assistant.');
   }
 
   function addMessage(role, text) {
@@ -107,10 +107,7 @@
       chatMessages.appendChild(messageElement);
     });
 
-    if (isWaitingForResponse) {
-      chatMessages.appendChild(createTypingIndicator());
-    }
-
+    if (isWaitingForResponse) chatMessages.appendChild(createTypingIndicator());
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
@@ -124,19 +121,7 @@
 
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
-
-    const paragraphs = message.text.split(/\n{2,}/).map((segment) => segment.trim()).filter(Boolean);
-    if (paragraphs.length === 0) {
-      const paragraph = document.createElement('p');
-      paragraph.textContent = message.text.trim();
-      bubble.appendChild(paragraph);
-    } else {
-      paragraphs.forEach((segment) => {
-        const paragraph = document.createElement('p');
-        paragraph.textContent = segment;
-        bubble.appendChild(paragraph);
-      });
-    }
+    bubble.textContent = message.text;
 
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
@@ -155,7 +140,7 @@
     bubble.className = 'chat-bubble';
     bubble.setAttribute('aria-hidden', 'true');
 
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 3; i++) {
       const dot = document.createElement('span');
       dot.className = 'chat-dot';
       bubble.appendChild(dot);
@@ -167,71 +152,15 @@
   }
 
   function setStatus(message) {
-    if (!chatStatus) {
-      return;
-    }
-    chatStatus.textContent = message;
+    if (chatStatus) chatStatus.textContent = message;
   }
 
   function setWaitingState(isWaiting) {
     isWaitingForResponse = isWaiting;
     chatInput.disabled = isWaiting;
     sendButton.disabled = isWaiting;
-    quickPromptButtons.forEach((button) => {
-      button.disabled = isWaiting;
-    });
+    quickPromptButtons.forEach((button) => (button.disabled = isWaiting));
     renderMessages();
-    if (!isWaiting) {
-      chatInput.focus();
-    }
-  }
-
-  async function requestAssistantReply() {
-    const payloadMessages = buildOpenAIMessages();
-    let lastError;
-
-    for (const url of API_ENDPOINTS) {
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ messages: payloadMessages })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          const errorMessage = data?.error || `Request failed with status ${response.status}`;
-          throw new Error(errorMessage);
-        }
-
-        if (data && typeof data.reply === 'string') {
-          return data.reply;
-        }
-
-        if (data && data.error) {
-          throw new Error(data.error);
-        }
-
-        throw new Error('Unexpected response from assistant.');
-      } catch (error) {
-        lastError = error;
-      }
-    }
-
-    throw lastError || new Error('Unable to reach assistant.');
-  }
-
-  function buildOpenAIMessages() {
-    const recentMessages = conversation.slice(-10).map((message) => ({
-      role: message.role,
-      content: message.text
-    }));
-
-    return [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...recentMessages
-    ];
+    if (!isWaiting) chatInput.focus();
   }
 })();
