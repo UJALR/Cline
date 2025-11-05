@@ -1,50 +1,99 @@
-Name: Ujjawal Rai
-Location: Mississauga, Ontario, Canada
+NAME: Ujjawal Rai
+LOCATION: Mississauga, Ontario, Canada
+NATIONALITY: Nepalese
 
-Profile:
-Ujjawal Rai is an aspiring Full-Stack Web Developer with strong interest in cloud, APIs, AI-powered applications, and modern web technologies. He is passionate about building functional, responsive and user-friendly web experiences.
+PROFILE:
+Ujjawal Rai is an aspiring Full-Stack Web Developer with strong interest in cloud, APIs, AI-powered applications, and modern web technologies. He focuses on building real projects that work — not just theory. His goal is to become an LLM Engineer and contribute to AI-driven web applications.
 
-Skills:
-- HTML5, CSS3, JavaScript
-- Python + Flask (backend APIs)
-- RESTful APIs and JSON communication
-- GitHub, Git version control
-- AWS S3 static hosting, Render cloud deployment
-- Building AI-driven applications using OpenAI
+PERSONAL BACKGROUND:
+- Originally from Nepal, currently living and studying in Canada
+- Passionate about AI, learning, building real projects, and exploring cloud technology
+- Motivated self-learner who improves through hands-on practice rather than memorizing syntax
+- Believes in growing step-by-step and building real experience through projects
 
-Projects:
-1. AI Portfolio Assistant
-   - Built a custom chatbot for portfolio websites using Flask, OpenAI and Render.
-   - Users can ask questions about skills, projects, and services.
+TECHNICAL SKILLS:
+Frontend:
+- HTML5, CSS3, Bootstrap
+- JavaScript (ES6+), DOM manipulation
+- Responsive website design
+Backend & APIs:
+- Python + Flask for backend APIs
+- RESTful APIs, JSON communication, environment variables, deployment structure
+- OpenAI integration (chatbots, summarizers, AI assistants)
+Cloud & Deployment:
+- AWS S3 (Static Hosting)
+- Render (Backend hosting)
+- Basic Linux & server commands
+Other Skills:
+- Git & GitHub version control
+- Problem-solving and debugging
+- Understanding of CORS, fetch(), and HTTP requests
+
+PROJECTS:
+1. AI Portfolio Chatbot
+   - A custom chatbot that answers questions about Ujjawal’s skills, background, experience, and projects.
+   - Built using Flask, OpenAI, JavaScript, and deployed on Render + S3.
+   - Users can ask questions like “What does Ujjawal do?”, “What skills does he have?”, or “How can I hire him?”
 
 2. AI Content Summarizer
-   - A full-stack application that summarizes content using OpenAI.
-   - Integrated frontend and backend with live deployment.
+   - A full-stack app that summarizes text using OpenAI API
+   - Frontend hosted on AWS S3, backend deployed on Render
 
 3. Personal Portfolio Website
-   - Developed a modern personal website hosted on AWS S3.
-   - Contains services, contact information and interactive features.
+   - A fully responsive personal portfolio hosted on AWS S3
+   - Includes services, project descriptions, chatbot, and contact section
 
-Services:
-- Portfolio building and customization
+SERVICES OFFERED:
 - Website development and UI enhancement
-- Small business website setup
-- API integration
-- Chatbot and AI feature integration
+- Portfolio development for students, freelancers, and job seekers
+- Small business websites
+- API integration and automation
+- AI chatbot and AI feature integration
 
-Education:
-Currently pursuing studies in Web Development and Cloud technologies from Algonquin College.
-(You can replace this later with real program + college)
+EDUCATION:
+- Studying Web Development and Cloud Technologies at Algonquin College
+- Improving skills in AI and LLMs to become an LLM Engineer
 
-Experience:
-- Built and deployed multiple web applications using Python, Flask, JavaScript and cloud platforms.
-- Strong practical knowledge in deployment, backend integration and frontend behavior.
+EXPERIENCE:
+- Built and deployed multiple real web applications
+- Familiar with connecting frontend ↔ backend ↔ cloud hosting
+- Practical experience working with REST APIs, JSON, fetch, and OpenAI
 
-Strengths:
-- Fast learner and great problem solver
-- Focused on clean code, performance, and user experience
-- Interested in AI, automation, and modern web apps
+COMMON QUESTIONS ANSWERED:
+- Who is Ujjawal?
+  Ujjawal is a Nepalese full-stack developer based in Canada.
 
-Contact:
-Ujjawal can be contacted through his portfolio website or professional channels for freelance or project collaborations.
-(You can add email or LinkedIn later)
+- What technologies does he use?
+  HTML, CSS, JS, Python, Flask, OpenAI, AWS, Render, GitHub.
+
+- How many years of experience?
+  Still early in his journey, but already building real-world deployed apps.
+
+- Can he work on projects?
+  Yes, especially small websites, APIs, and AI-powered tools.
+
+- What languages does he speak?
+  English, Nepali, Hindi.
+
+- Which college?
+  Algonquin College, Canada.
+
+STRENGTHS:
+- Fast learner and problem-solver
+- Focuses on real deployment, not just practice code
+- Natural interest in AI and full-stack development
+- Writes clean, simple, maintainable code
+
+HOBBIES & INTERESTS:
+- Artificial Intelligence
+- Cloud computing
+- Building small businesses tools
+- Learning new technology by doing hands-on projects
+
+CONTACT:
+- Can be contacted through his portfolio website or professional channels for freelance or project collaborations.
+
+IMPORTANT NOTE FOR CHATBOT:
+If the user asks something unrelated to Ujjawal (ex: "what is 2+2"), answer like a normal AI assistant.
+If the user asks private info such as phone number or email, respond politely that the information is not public.
+
