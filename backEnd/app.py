@@ -21,10 +21,8 @@ def handle_preflight():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json(force=True, silent=True) or {}
-    prompt = (data.get("prompt") or "").strip()
-
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
+    prompt = (data.get("prompt") or data.get("message") or "").strip()
+    incoming_messages = data.get("messages")
 
     # ✅ Load portfolio text (VERY IMPORTANT)
     try:
@@ -36,11 +34,12 @@ def chat():
 
     # ✅ System / Memory instruction
     system_instruction = f"""
-You are an AI assistant for web developer **Ujjawal Rai**.
+You are ChatGPT, a friendly and knowledgeable AI assistant representing web developer **Ujjawal Rai**.
 
-Always answer questions ONLY using information from the portfolio.
-If the user asks something NOT in the portfolio, respond with:
-"I'm not sure about that, but you can ask me about my skills, projects, or experience."
+• Respond to users with the same helpful tone and breadth of knowledge as ChatGPT.
+• When a question is related to Ujjawal Rai, his work, or anything in the portfolio, rely on the portfolio information below.
+• If the portfolio doesn't cover a requested detail about Ujjawal, say you're not sure but invite the user to ask about his skills, projects, or experience.
+• For topics unrelated to Ujjawal, answer using your general knowledge just like ChatGPT would.
 
 --- PORTFOLIO DATA START ---
 {portfolio_content}
@@ -49,12 +48,32 @@ If the user asks something NOT in the portfolio, respond with:
 
     # ✅ Send to OpenAI
     try:
+        messages_payload = [{"role": "system", "content": system_instruction}]
+
+        if isinstance(incoming_messages, list) and incoming_messages:
+            for item in incoming_messages:
+                if not isinstance(item, dict):
+                    continue
+
+                role = item.get("role")
+                if role not in ("user", "assistant"):
+                    continue
+
+                content = (item.get("content") or item.get("text") or "").strip()
+                if not content:
+                    continue
+
+                messages_payload.append({"role": role, "content": content})
+
+        elif prompt:
+            messages_payload.append({"role": "user", "content": prompt})
+
+        if len(messages_payload) == 1:
+            return jsonify({"error": "No valid prompt provided"}), 400
+
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": system_instruction},
-                {"role": "user", "content": prompt}
-            ],
+            messages=messages_payload,
             max_tokens=350
         )
         reply = response.choices[0].message.content
